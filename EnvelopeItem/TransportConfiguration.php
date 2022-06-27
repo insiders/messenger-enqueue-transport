@@ -21,7 +21,7 @@ use Symfony\Component\Messenger\Stamp\StampInterface;
  *
  * @experimental in 4.1
  */
-final class TransportConfiguration implements StampInterface, \Serializable
+final class TransportConfiguration implements StampInterface
 {
     private $topic;
 
@@ -99,24 +99,16 @@ final class TransportConfiguration implements StampInterface, \Serializable
         return $this;
     }
 
-    public function serialize()
+    public function __serialize(): array
     {
-        return serialize(array(
+        return [
             'topic' => $this->topic,
             'metadata' => $this->metadata,
-        ));
+        ];
     }
 
-    public function unserialize($serialized)
+    public function __unserialize(array $serialized): void
     {
-        list(
-            'topic' => $topic,
-            'metadata' => $metadata
-        ) = unserialize($serialized, array('allowed_classes' => false));
-
-        $this->__construct(array(
-            'topic' => $topic,
-            'metadata' => $metadata,
-        ));
+        $this->__construct($serialized);
     }
 }
